@@ -2,6 +2,8 @@ import { Component, Input } from '@angular/core';
 import { TaskComponent } from './task/task.component';
 import { DUMMY_TASKS } from '../dummy-tasks';
 import { NewTaskComponent } from './new-task/new-task.component';
+import { NewTask } from './new-task/new-task.model';
+import { TasksService } from './tasks.service';
 
 @Component({
   selector: 'app-tasks',
@@ -16,23 +18,18 @@ export class TasksComponent {
   @Input() userId!: string;
   @Input() name!: string;
 
+  //so we can use the same instance in various components
+  constructor(private tasksService: TasksService) {}
+
   get selectedUserTasks() {
-    return this.tasks.filter((task) => task.userId === this.userId);
+    return this.tasksService.getUserTasks(this.userId);
   }
 
   onStartAddTask() {
     this.isAddingTask = true;
   }
 
-  onCompleteTask(id: string) {
-    this.tasks = this.tasks.filter((task) => task.id !== id);
-  }
-
-  onCancel() {
+  onCloseAddTask() {
     this.isAddingTask = false;
-  }
-
-  onCreate(newTask: string) {
-    console.log(newTask);
   }
 }
